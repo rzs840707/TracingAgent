@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Premain-Class: fr.sivrit.traceragent.TracerAgent
-Agent-Class: fr.sivrit.traceragent.TracerAgent
+Premain-Class: fr.sivrit.tracingagent.TracerAgent
+Agent-Class: fr.sivrit.tracingagent.TracerAgent
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true

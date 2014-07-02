@@ -1,4 +1,4 @@
-package fr.sivrit.traceragent;
+package fr.sivrit.tracingagent;
 
 import java.lang.instrument.Instrumentation;
 
@@ -7,7 +7,7 @@ import javax.management.MBeanRegistrationException;
 import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 
-import fr.sivrit.traceragent.options.AgentOptions;
+import fr.sivrit.tracingagent.options.AgentOptions;
 
 public class TracerAgent {
    public static void premain(final String agentArgs, final Instrumentation inst) {

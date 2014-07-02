@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import fr.sivrit.tracingagent.options.AgentOptions;
+
 public class AgentOptionsTest {
    private void assertDefaults(final AgentOptions options) {
       assertFalse(options.enhanceAtStartup);

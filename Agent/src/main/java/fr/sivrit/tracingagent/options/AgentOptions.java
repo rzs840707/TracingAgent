@@ -1,4 +1,4 @@
-package fr.sivrit.traceragent.options;
+package fr.sivrit.tracingagent.options;
 
 import static java.lang.Boolean.parseBoolean;
 
