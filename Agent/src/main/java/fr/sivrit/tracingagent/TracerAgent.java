@@ -7,6 +7,7 @@ import java.lang.instrument.Instrumentation;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
@@ -14,8 +15,16 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 
 import fr.sivrit.tracingagent.options.AgentOptions;
+import fr.sivrit.tracingagent.rules.InstrumentationRule;
+import fr.sivrit.tracingagent.rules.JvmClassesRule;
+import fr.sivrit.tracingagent.rules.MatchAllRule;
+import fr.sivrit.tracingagent.rules.RuleParser;
+import fr.sivrit.tracingagent.rules.RuleSequence;
 
 public class TracerAgent {
+   private final static Logger LOGGER = Logger.getLogger(TracerAgent.class
+         .getName());
+
    /**
     * Location of the embedded Jar with the code for the probe.
     */
@@ -51,6 +60,18 @@ public class TracerAgent {
       inst.appendToBootstrapClassLoaderSearch(probeJarFile);
 
       final AgentOptions options = AgentOptions.parseOptions(agentArgs);
+
+      LOGGER.info("Rules file: " + options.ruleFile);
+      final InstrumentationRule rules;
+      if (options.ruleFile == null || options.ruleFile.isEmpty()) {
+         // Default: instrument everything but internal classes
+         rules = new RuleSequence(new JvmClassesRule(false), new MatchAllRule(
+               true));
+      } else {
+         rules = RuleParser.parseFile(options.ruleFile);
+      }
+      LOGGER.fine("Actual rules: " + rules);
+
    }
 
    public static void premain(final String agentArgs) {

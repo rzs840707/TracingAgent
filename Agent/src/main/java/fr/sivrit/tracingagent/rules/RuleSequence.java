@@ -10,6 +10,11 @@ public class RuleSequence implements InstrumentationRule {
       this.rules = rules.toArray(new InstrumentationRule[rules.size()]);
    }
 
+   public RuleSequence(final InstrumentationRule... rules) {
+      super();
+      this.rules = rules.clone();
+   }
+
    @Override
    public Boolean mustRedefine(final String className) {
       for (final InstrumentationRule rule : rules) {
