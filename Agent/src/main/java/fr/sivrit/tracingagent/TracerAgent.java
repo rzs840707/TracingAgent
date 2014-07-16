@@ -20,6 +20,7 @@ import fr.sivrit.tracingagent.rules.JvmClassesRule;
 import fr.sivrit.tracingagent.rules.MatchAllRule;
 import fr.sivrit.tracingagent.rules.RuleParser;
 import fr.sivrit.tracingagent.rules.RuleSequence;
+import fr.sivrit.tracingagent.transformer.Transformer;
 
 public class TracerAgent {
    private final static Logger LOGGER = Logger.getLogger(TracerAgent.class
@@ -53,7 +54,9 @@ public class TracerAgent {
    }
 
    public static void premain(final String agentArgs, final Instrumentation inst)
-         throws IOException {
+         throws IOException, MalformedObjectNameException,
+         InstanceAlreadyExistsException, MBeanRegistrationException,
+         NotCompliantMBeanException {
       // The (few) classes from the probe need to be visible by all the classes
       // on the JVM, so we add it to the bootstrap classLoader.
       final JarFile probeJarFile = extractProbe();
@@ -67,11 +70,15 @@ public class TracerAgent {
          // Default: instrument everything but internal classes
          rules = new RuleSequence(new JvmClassesRule(false), new MatchAllRule(
                true));
+
       } else {
          rules = RuleParser.parseFile(options.ruleFile);
       }
       LOGGER.fine("Actual rules: " + rules);
 
+      final Transformer transformer = new Transformer(inst, rules);
+      transformer.setActive(options.enhanceAtStartup);
+      inst.addTransformer(transformer);
    }
 
    public static void premain(final String agentArgs) {
