@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.instrument.Instrumentation;
+import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
@@ -11,9 +12,14 @@ import java.util.logging.Logger;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
+import javax.management.StandardMBean;
 
+import fr.sivrit.tracingagent.jmx.TransformerMBean;
+import fr.sivrit.tracingagent.jmx.TransformerMBeanImpl;
 import fr.sivrit.tracingagent.options.AgentOptions;
 import fr.sivrit.tracingagent.rules.InstrumentationRule;
 import fr.sivrit.tracingagent.rules.JvmClassesRule;
@@ -70,7 +76,6 @@ public class TracerAgent {
          // Default: instrument everything but internal classes
          rules = new RuleSequence(new JvmClassesRule(false), new MatchAllRule(
                true));
-
       } else {
          rules = RuleParser.parseFile(options.ruleFile);
       }
@@ -79,6 +84,16 @@ public class TracerAgent {
       final Transformer transformer = new Transformer(inst, rules);
       transformer.setActive(options.enhanceAtStartup);
       inst.addTransformer(transformer);
+
+      if (options.enableJmx) {
+         final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+         final ObjectName name = new ObjectName(
+               "fr.sivrit.tracingagent:type=TransformerMBean");
+         final TransformerMBeanImpl trMBean = new TransformerMBeanImpl(
+               transformer);
+         mbs.registerMBean(new StandardMBean(trMBean, TransformerMBean.class),
+               name);
+      }
    }
 
    public static void premain(final String agentArgs) {
