@@ -9,8 +9,6 @@ public class AgentOptions {
 
    public final static String ENHANCE_OPT = "enhance";
 
-   public final static String LOG_ARGS_OPT = "log-arguments";
-
    public final static String LOG_OPT = "log";
 
    public final static String JMX_OPT = "jmx";
@@ -40,36 +38,32 @@ public class AgentOptions {
       final boolean enhanceAtStartup = parseBoolean(parsedArgs
             .getProperty(ENHANCE_OPT));
       final boolean logAtStartup = parseBoolean(parsedArgs.getProperty(LOG_OPT));
-      final boolean logArguments = parseBoolean(parsedArgs
-            .getProperty(LOG_ARGS_OPT));
       final boolean enableJmx = parseBoolean(parsedArgs.getProperty(JMX_OPT,
             "true"));
 
-      final String outputDir = parsedArgs.getProperty(OUTPUT_OPT,
-            System.getProperty("user.home"));
+      final String outputFile = parsedArgs.getProperty(OUTPUT_OPT,
+            System.getProperty("user.home") + "/log.gz");
       final String ruleFile = parsedArgs.getProperty(RULES_OPT);
 
-      return new AgentOptions(enhanceAtStartup, logAtStartup, logArguments,
-            enableJmx, outputDir, ruleFile);
+      return new AgentOptions(enhanceAtStartup, logAtStartup, enableJmx,
+            outputFile, ruleFile);
    }
 
    private AgentOptions(final boolean enhanceAtStartup,
-         final boolean logAtStartup, final boolean logArguments,
-         final boolean enableJmx, final String outputDir, final String ruleFile) {
+         final boolean logAtStartup, final boolean enableJmx,
+         final String outputFile, final String ruleFile) {
       super();
       this.enhanceAtStartup = enhanceAtStartup;
       this.logAtStartup = logAtStartup;
-      this.logArguments = logArguments;
       this.enableJmx = enableJmx;
-      this.outputDir = outputDir;
+      this.outputFile = outputFile;
       this.ruleFile = ruleFile;
    }
 
    // TODO javadoc
    public final boolean enhanceAtStartup;
    public final boolean logAtStartup;
-   public final boolean logArguments;
    public final boolean enableJmx;
-   public final String outputDir;
+   public final String outputFile;
    public final String ruleFile;
 }

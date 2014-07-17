@@ -18,4 +18,8 @@ public interface TransformerMBean {
    long getCacheContentSize();
 
    String getRules();
+
+   boolean isLogging();
+
+   void setLogging(boolean newValue);
 }

@@ -1,5 +1,6 @@
 package fr.sivrit.tracingagent.jmx;
 
+import fr.sivrit.tracingagent.tracer.FileTracer;
 import fr.sivrit.tracingagent.transformer.Transformer;
 
 public class TransformerMBeanImpl implements TransformerMBean {
@@ -53,5 +54,15 @@ public class TransformerMBeanImpl implements TransformerMBean {
    @Override
    public long getTotalRedefinitionTimeMilli() {
       return transformer.getTotalRedefinitionTime() / 1000000;
+   }
+
+   @Override
+   public boolean isLogging() {
+      return FileTracer.isLogging;
+   }
+
+   @Override
+   public void setLogging(final boolean newValue) {
+      FileTracer.setLogging(newValue);
    }
 }

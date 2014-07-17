@@ -13,11 +13,11 @@ public class AgentOptionsTest {
    private void assertDefaults(final AgentOptions options) {
       assertFalse(options.enhanceAtStartup);
       assertFalse(options.logAtStartup);
-      assertFalse(options.logArguments);
 
       assertTrue(options.enableJmx);
 
-      assertEquals(System.getProperty("user.home"), options.outputDir);
+      assertEquals(System.getProperty("user.home") + "/log.gz",
+            options.outputFile);
       assertNull(options.ruleFile);
    }
 
@@ -71,18 +71,6 @@ public class AgentOptionsTest {
    }
 
    @Test
-   public void setLogArgsToTrue() {
-      final AgentOptions opt = AgentOptions.parseOptions("log-arguments=true");
-      assertTrue(opt.logArguments);
-   }
-
-   @Test
-   public void setLogArgsToFalse() {
-      final AgentOptions opt = AgentOptions.parseOptions("log-arguments=false");
-      assertFalse(opt.logArguments);
-   }
-
-   @Test
    public void setJmxToTrue() {
       final AgentOptions opt = AgentOptions.parseOptions("jmx=true");
       assertTrue(opt.enableJmx);
@@ -96,8 +84,8 @@ public class AgentOptionsTest {
 
    @Test
    public void setOutputDir() {
-      final AgentOptions opt = AgentOptions.parseOptions("output=./somedir");
-      assertEquals("./somedir", opt.outputDir);
+      final AgentOptions opt = AgentOptions.parseOptions("output=./someFile");
+      assertEquals("./someFile", opt.outputFile);
    }
 
    @Test
@@ -109,12 +97,11 @@ public class AgentOptionsTest {
    @Test
    public void setMultipleOptions() {
       final AgentOptions opt = AgentOptions
-            .parseOptions("log=true,output=./somedir,rules=./rules.txt,jmx=true,");
+            .parseOptions("log=true,output=./someFile,rules=./rules.txt,jmx=true,");
 
-      assertEquals("./somedir", opt.outputDir);
+      assertEquals("./someFile", opt.outputFile);
       assertEquals("./rules.txt", opt.ruleFile);
       assertTrue(opt.enableJmx);
       assertTrue(opt.logAtStartup);
-      assertFalse(opt.logArguments);
    }
 }

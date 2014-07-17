@@ -26,6 +26,7 @@ import fr.sivrit.tracingagent.rules.JvmClassesRule;
 import fr.sivrit.tracingagent.rules.MatchAllRule;
 import fr.sivrit.tracingagent.rules.RuleParser;
 import fr.sivrit.tracingagent.rules.RuleSequence;
+import fr.sivrit.tracingagent.tracer.FileTracer;
 import fr.sivrit.tracingagent.transformer.Transformer;
 
 public class TracerAgent {
@@ -80,6 +81,15 @@ public class TracerAgent {
          rules = RuleParser.parseFile(options.ruleFile);
       }
       LOGGER.fine("Actual rules: " + rules);
+
+      LOGGER.fine("Output: " + options.outputFile);
+      if (options.outputFile != null && !options.outputFile.trim().isEmpty()) {
+         FileTracer.setup(options.outputFile);
+      }
+
+      if (options.logAtStartup) {
+         FileTracer.setLogging(true);
+      }
 
       final Transformer transformer = new Transformer(inst, rules);
       transformer.setActive(options.enhanceAtStartup);
